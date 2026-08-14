@@ -1,0 +1,65 @@
+<div class="container py-4">
+
+  <a
+    [routerLink]="customer ? ['/customers', customer.id] : ['/customers']"
+    class="text-decoration-none small"
+  >
+    <i class="bi bi-arrow-left me-1"></i>
+    Back
+  </a>
+
+  <div class="mt-4 mb-4">
+    <span class="text-primary fw-semibold small">
+      STEP 1 OF 2
+    </span>
+
+    <h1 class="h2 fw-bold mt-2 mb-1">
+      What are you working on?
+    </h1>
+
+    <p class="text-secondary mb-0">
+      Choose the type of estimate you're creating.
+    </p>
+  </div>
+
+  <div class="d-grid gap-3">
+
+    <button
+      *ngFor="let job of jobTypes"
+      type="button"
+      class="card job-card text-start p-3"
+      [class.selected]="selectedJobType === job.value"
+      (click)="selectJobType(job.value)"
+    >
+      <div class="d-flex align-items-center">
+
+        <div class="job-icon me-3">
+          <i class="bi {{ job.icon }} fs-4"></i>
+        </div>
+
+        <div class="flex-grow-1">
+          <h2 class="h5 mb-1">{{ job.title }}</h2>
+          <p class="text-secondary small mb-0">
+            {{ job.description }}
+          </p>
+        </div>
+
+        <i
+          *ngIf="selectedJobType === job.value"
+          class="bi bi-check-circle-fill text-primary fs-4"
+        ></i>
+      </div>
+    </button>
+
+  </div>
+
+  <button
+    class="btn btn-primary btn-lg w-100 mt-4"
+    [disabled]="!selectedJobType"
+    (click)="continue()"
+  >
+    Continue
+    <i class="bi bi-arrow-right ms-2"></i>
+  </button>
+
+</div>

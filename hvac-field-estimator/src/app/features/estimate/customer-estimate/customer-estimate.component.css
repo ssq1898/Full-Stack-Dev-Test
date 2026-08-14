@@ -1,0 +1,30 @@
+.estimate-document {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.brand-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media print {
+  nav,
+  button {
+    display: none !important;
+  }
+
+  body {
+    background: white !important;
+  }
+
+  .estimate-document {
+    box-shadow: none !important;
+  }
+}

@@ -1,0 +1,256 @@
+<div class="container py-4">
+
+  <a
+    routerLink="/estimate/start"
+    class="text-decoration-none small"
+  >
+    <i class="bi bi-arrow-left me-1"></i>
+    Back
+  </a>
+
+  <div class="mt-4 mb-4">
+    <span class="text-primary fw-semibold small">
+      STEP 2 OF 2
+    </span>
+
+    <h1 class="h2 fw-bold mt-2 mb-1">
+      Build estimate
+    </h1>
+
+    <p class="text-secondary mb-0">
+      Select equipment and labor for this job.
+    </p>
+  </div>
+
+  <!-- Customer summary -->
+  <div class="card shadow-sm p-3 mb-4">
+    <div class="d-flex align-items-center">
+      <div class="customer-icon me-3">
+        <i class="bi bi-person"></i>
+      </div>
+
+      <div>
+        <div class="fw-semibold">
+          {{ estimate.customer?.name }}
+        </div>
+
+        <small class="text-secondary">
+          {{ estimate.customer?.systemType }}
+          · {{ estimate.customer?.squareFootage | number }} sq ft
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Equipment -->
+  <section class="mb-4">
+
+    <div class="d-flex justify-content-between align-items-end mb-3">
+      <div>
+        <h2 class="h5 fw-bold mb-1">Equipment</h2>
+        <p class="text-secondary small mb-0">
+          Select the equipment needed.
+        </p>
+      </div>
+
+      <span class="badge bg-primary-subtle text-primary">
+        {{ estimate.equipment.length }} selected
+      </span>
+    </div>
+
+    <div class="category-scroll mb-3">
+      <button
+        *ngFor="let category of categories"
+        class="btn btn-sm me-2"
+        [class.btn-primary]="selectedCategory === category"
+        [class.btn-outline-secondary]="selectedCategory !== category"
+        (click)="selectedCategory = category"
+      >
+        {{ category }}
+      </button>
+    </div>
+
+    <div class="d-grid gap-2">
+
+      <button
+        *ngFor="let item of filteredEquipment"
+        type="button"
+        class="card equipment-card text-start p-3"
+        [class.selected]="isSelected(item)"
+        (click)="toggleEquipment(item)"
+      >
+
+        <div class="d-flex align-items-start">
+
+          <div class="equipment-icon me-3">
+            <i class="bi bi-box-seam"></i>
+          </div>
+
+          <div class="flex-grow-1">
+            <div class="fw-semibold">{{ item.name }}</div>
+
+            <div class="small text-secondary">
+              {{ item.brand }} · {{ item.modelNumber }}
+            </div>
+
+            <div class="fw-bold mt-1">
+              {{ item.baseCost | currency }}
+            </div>
+          </div>
+
+          <i
+            *ngIf="isSelected(item)"
+            class="bi bi-check-circle-fill text-primary fs-4"
+          ></i>
+
+        </div>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- Labor -->
+  <section class="mb-4">
+
+    <h2 class="h5 fw-bold mb-1">Labor</h2>
+    <p class="text-secondary small mb-3">
+      Select the appropriate labor rate.
+    </p>
+
+    <div class="d-grid gap-2">
+
+      <button
+        *ngFor="let rate of laborRates"
+        type="button"
+        class="card labor-card text-start p-3"
+        [class.selected]="selectedLabor?.level === rate.level"
+        (click)="selectLabor(rate)"
+      >
+
+        <div class="d-flex align-items-center">
+
+          <div class="flex-grow-1">
+            <div class="fw-semibold text-capitalize">
+              {{ rate.level }}
+            </div>
+
+            <small class="text-secondary">
+              {{ rate.estimatedHours.min }}–{{ rate.estimatedHours.max }}
+              estimated hours
+            </small>
+          </div>
+
+          <div class="text-end">
+            <div class="fw-bold">
+              {{ rate.hourlyRate | currency }}/hr
+            </div>
+
+            <i
+              *ngIf="selectedLabor?.level === rate.level"
+              class="bi bi-check-circle-fill text-primary"
+            ></i>
+          </div>
+
+        </div>
+
+      </button>
+
+    </div>
+
+  </section>
+
+  <!-- Hours -->
+  <section
+    *ngIf="estimate.laborRate"
+    class="card shadow-sm p-4 mb-4"
+  >
+
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h2 class="h5 fw-bold mb-1">Estimated hours</h2>
+        <small class="text-secondary">
+          {{ minimumHours }}–{{ maximumHours }} hours recommended
+        </small>
+      </div>
+
+      <div class="hours-control">
+        <button
+          class="btn btn-outline-secondary"
+          (click)="changeHours(-0.5)"
+        >
+          −
+        </button>
+
+        <span class="fw-bold px-3">
+          {{ estimate.laborHours }}
+        </span>
+
+        <button
+          class="btn btn-outline-secondary"
+          (click)="changeHours(0.5)"
+        >
+          +
+        </button>
+      </div>
+    </div>
+
+    <input
+      type="range"
+      class="form-range"
+      [min]="minimumHours"
+      [max]="maximumHours"
+      step="0.5"
+      [value]="estimate.laborHours"
+      (input)="updateHours($event)"
+    >
+
+  </section>
+
+  <!-- Notes -->
+  <section class="mb-4">
+    <label class="form-label fw-semibold">
+      Job notes
+    </label>
+
+    <textarea
+      class="form-control"
+      rows="3"
+      placeholder="Add notes about the work..."
+      [(ngModel)]="estimateNotes"
+    ></textarea>
+  </section>
+
+  <!-- Live total -->
+  <div class="estimate-total card shadow-sm p-3 mb-4">
+
+    <div class="d-flex justify-content-between mb-2">
+      <span class="text-secondary">Equipment</span>
+      <span>{{ estimate.equipmentSubtotal | currency }}</span>
+    </div>
+
+    <div class="d-flex justify-content-between mb-3">
+      <span class="text-secondary">Labor</span>
+      <span>{{ estimate.laborSubtotal | currency }}</span>
+    </div>
+
+    <div class="border-top pt-3 d-flex justify-content-between">
+      <span class="fw-bold">Estimated total</span>
+      <span class="fw-bold fs-5 text-primary">
+        {{ estimate.total | currency }}
+      </span>
+    </div>
+
+  </div>
+
+  <button
+    class="btn btn-primary btn-lg w-100"
+    [disabled]="!estimate.laborRate"
+    (click)="continue()"
+  >
+    Review Estimate
+    <i class="bi bi-arrow-right ms-2"></i>
+  </button>
+
+</div>

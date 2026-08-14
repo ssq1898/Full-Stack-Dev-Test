@@ -1,0 +1,35 @@
+.category-scroll {
+  display: flex;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+
+.equipment-card,
+.labor-card {
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.equipment-card.selected,
+.labor-card.selected {
+  border-color: var(--bs-primary);
+}
+
+.equipment-icon,
+.customer-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: var(--bs-primary-bg-subtle);
+  color: var(--bs-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.hours-control {
+  display: flex;
+  align-items: center;
+}
